@@ -1,0 +1,70 @@
+# PRIMEIRO PASSO
+# IMPORTAR A BIBLIOTECA PARA LER O PDF DO PROCESSO
+
+import PyPDF2
+
+# Abrir o arquivo PDF
+with open('processo.pdf', 'rb') as file:
+    # Criar um objeto PdfFileReader
+    reader = PyPDF2.PdfFileReader(file)
+    
+    # Obter o número total de páginas
+    num_pages = reader.numPages
+    
+    # Iterar sobre todas as páginas
+    for page_num in range(num_pages):
+        # Obter a página atual
+        page = reader.getPage(page_num)
+        
+        # Extrair texto da página
+        text = page.extract_text()
+        
+        # Imprimir o texto
+        print(text)
+
+# SEGUNDO PASSO
+import openai
+
+# Inserir a chave de API da OpenAI
+api_key = 'SUA_CHAVE_DE_API_AQUI'
+openai.api_key = api_key
+
+# Função para interagir com o ChatGPT
+def chat(prompt):
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=1000  # Ajuste o valor conforme necessário
+    )
+    return response.choices[0].text.strip()
+
+# Comando para o LLM
+prompt = """Você agora é um assessor judiciário especializado em análise de autos processuais. A partir do texto extraído, indique o juro contratado"""
+
+# Chamar a função chat e imprimir a resposta
+resposta = chat(prompt)
+print(resposta)
+
+# TERCEIRO PASSO
+# SCRIPT DE COMPARAÇÃO E RESULTADO
+
+def compara_juro(juro, parametro):
+    if juro > parametro:
+        return "APELAÇÃO CÍVEL. ALIENAÇÃO FIDUCIÁRIA. REVISÃO DE CONTRATO. DA APLICAÇÃO DO CDC E DOS CONTRATOS DE ADESÃO. RELAÇÃO CONSUMERISTA CONFIGURADA. PRESENÇA DE CONSUMIDOR E FORNECEDOR; ARTS. 2º E 3º DA LEI 8009/90. SÚMULA 297, STJ. LEI PROTETIVA APLICÁVEL AO CASO CONCRETO. JUROS REMUNERATÓRIOS. LIMITAÇÃO DOS JUROS AO PERCENTUAL DA TAXA MÉDIA DO MERCADO, QUANDO FOREM ABUSIVOS, TAL COMO PUBLICADO PELO BACEN EM SEU SITE. POSIÇÃO DO STJ CONSUBSTANCIADA NO ACÓRDÃO PARADIGMA - RESP 1.061.530/RS. EXISTÊNCIA DE ABUSIVIDADE NO CASO CONCRETO. CAPITALIZAÇÃO DE JUROS. A INCIDÊNCIA DA CAPITALIZAÇÃO DE JUROS É PERMITIDA, MAS DESDE QUE CONSTE SUA PACTUAÇÃO DE FORMA EXPRESSA NO INSTRUMENTO CONTRATUAL, NOS TERMOS DO RESP Nº 973.827-RS, DE RELATORIA DA MIN. MARIA ISABEL GALLOTTI. COMO ESTE É O CASO DOS AUTOS, A CAPITALIZAÇÃO É MANTIDA. COMPENSAÇÃO DE VALORES E REPETIÇÃO DO INDÉBITO. A FIM DE EVITAR O ENRIQUECIMENTO ILÍCITO DE UMA DAS PARTES, A COMPENSAÇÃO DE VALORES E A REPETIÇÃO DO INDÉBITO SÃO DEVIDAS, RESPEITANDO O DISPOSTO NOS ARTIGOS 369 E 876, AMBOS DO CC. A RESTITUIÇÃO DEVE OCORRER DE FORMA SIMPLES, E COMO CONSEQUÊNCIA LÓGICA DO JULGADO. APELO PARCIALMENTE PROVIDO.(Apelação Cível, Nº 50005683220158210005, Décima Quarta Câmara Cível, Tribunal de Justiça do RS, Relator: Roberto Sbravati, Julgado em: 10-07-2024)."
+    elif juro < parametro:
+        return "APELAÇÃO CÍVEL. AÇÃO REVISIONAL DE CONTRATO BANCÁRIO. JUROS REMUNERATÓRIOS E CLÁUSULAS ANÁLOGAS. AUSÊNCIA DE INTERESSE RECURSAL PARCIAL. IMPROCEDÊNCIA. REAFIRMAÇÃO. Deixa-se de conhecer parcialmente da apelação, por ausência de interesse recursal, quanto à pretensão de majoração dos honorários advocatícios sucumbenciais arbitrados na sentença ao procurador do banco demandado, porque quem deve pagá-los é o demandante e ora apelante, integralmente sucumbente na causa. A pretensão revisional de contrato de crédito bancário e a questão dos juros remuneratórios e cláusulas análogas resolvem-se de acordo com os precedentes vinculantes firmados pelo Supremo Tribunal e pelo Superior Tribunal de Justiça. APELAÇÃO CONHECIDA EM PARTE E DESPROVIDA.(Apelação Cível, Nº 50201329120248210001, Vigésima Câmara Cível, Tribunal de Justiça do RS, Relator: Carlos Cini Marchionatti, Julgado em: 10-07-2024)."
+    else:
+        return "APELAÇÃO CÍVEL. AÇÃO REVISIONAL DE CONTRATO BANCÁRIO. JUROS REMUNERATÓRIOS E CLÁUSULAS ANÁLOGAS. AUSÊNCIA DE INTERESSE RECURSAL PARCIAL. IMPROCEDÊNCIA. REAFIRMAÇÃO. Deixa-se de conhecer parcialmente da apelação, por ausência de interesse recursal, quanto à pretensão de majoração dos honorários advocatícios sucumbenciais arbitrados na sentença ao procurador do banco demandado, porque quem deve pagá-los é o demandante e ora apelante, integralmente sucumbente na causa. A pretensão revisional de contrato de crédito bancário e a questão dos juros remuneratórios e cláusulas análogas resolvem-se de acordo com os precedentes vinculantes firmados pelo Supremo Tribunal e pelo Superior Tribunal de Justiça. APELAÇÃO CONHECIDA EM PARTE E DESPROVIDA.(Apelação Cível, Nº 50201329120248210001, Vigésima Câmara Cível, Tribunal de Justiça do RS, Relator: Carlos Cini Marchionatti, Julgado em: 10-07-2024)."
+
+# EXEMPLO DE USO
+try:
+    juro_contratado = float(resposta)  # Convertendo a resposta para float
+except ValueError:
+    print("Não foi possível converter a resposta em um valor numérico de juro.")
+    juro_contratado = None
+
+if juro_contratado is not None:
+    parametro = 0.02  # Defina o parâmetro para comparação (exemplo: 2%)
+
+    resultado = compara_juro(juro_contratado, parametro)
+    print(resultado)
